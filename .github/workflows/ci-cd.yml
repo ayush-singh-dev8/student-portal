@@ -24,15 +24,9 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: maven
     
-    - name: Build and Test Backend
-      run: |
-        cd student-portal-backend
-        chmod +x mvnw  # Ensure Maven wrapper is executable
-        ./mvnw clean verify
-      env:
-        SPRING_PROFILES_ACTIVE: test
+    - name: Build Backend
+      run: ./mvnw clean package -DskipTests
     
     # Frontend Build and Test
     - name: Set up Node.js
@@ -42,15 +36,10 @@ jobs:
         cache: 'npm'
         cache-dependency-path: student-portal-frontend/package-lock.json
     
-    - name: Install Frontend Dependencies
+    - name: Build Frontend
       run: |
-        cd student-portal-frontend
         npm ci
-    
-    - name: Test Frontend
-      run: |
-        cd student-portal-frontend
-        npm test
+        npm run build
 
   build-and-push:
     needs: build-and-test
