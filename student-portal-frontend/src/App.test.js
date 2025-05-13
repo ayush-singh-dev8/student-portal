@@ -1,17 +1,31 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import '@testing-library/jest-dom';
 
-// Mock axios
-jest.mock('axios', () => ({
-  create: jest.fn(() => ({
-    get: jest.fn(),
-    post: jest.fn(),
-    put: jest.fn(),
-    delete: jest.fn()
-  }))
-}));
+// Mock any modules that App depends on
+jest.mock('./services/api', () => {
+  return {
+    get: jest.fn(() => Promise.resolve({ data: {} }))
+  };
+});
+
+// Mock the components that use axios
+jest.mock('./pages/Dashboard', () => () => <div>Dashboard</div>);
+jest.mock('./pages/AddStudent', () => () => <div>Add Student</div>);
+jest.mock('./pages/EditStudent', () => () => <div>Edit Student</div>);
+
+test('renders without crashing', () => {
+  render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+  // Test for a basic element that should be present
+  const appElement = document.querySelector('.App');
+  expect(appElement).toBeInTheDocument();
+});
 
 test('renders navigation links', () => {
   render(
