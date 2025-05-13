@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../services/api';
 
@@ -17,11 +17,7 @@ const EditStudent = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchStudent();
-  }, [id, fetchStudent]);
-
-  const fetchStudent = async () => {
+  const fetchStudent = useCallback(async () => {
     try {
       const response = await api.get(`/api/students/${id}`);
       setFormData(response.data);
@@ -31,7 +27,11 @@ const EditStudent = () => {
       setLoading(false);
       console.error('Error fetching student:', err);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchStudent();
+  }, [fetchStudent]);
 
   const handleChange = (e) => {
     setFormData({
