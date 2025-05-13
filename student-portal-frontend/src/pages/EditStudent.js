@@ -19,7 +19,7 @@ const EditStudent = () => {
 
   useEffect(() => {
     fetchStudent();
-  }, [id]);
+  }, [id, fetchStudent]);
 
   const fetchStudent = async () => {
     try {
